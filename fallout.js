@@ -32,9 +32,8 @@ function start(){
 }
 
 function reset(){
-	document.getElementById('words').innerHTML = "";
+	document.getElementById('workspace').innerHTML = "<textarea id='words' rows='20' cols='80'></textarea>";
 	document.getElementById('progress').innerHTML = "&nbsp";
-	document.getElementById('output').innerHTML = "";
 	map = [];
 	validWordList = [];
 	document.getElementById('start').disabled = false;
@@ -64,20 +63,23 @@ function inverseHammDist(word1, word2){
 
 function updateResultsTable(){
 	var optimalWord = optimalChoice();
-	document.getElementById('output').innerHTML = "";
+	var newWorkspace = "<table>";
 	for(var key in map){
-		var row = "";
+		newWorkspace += "<tr>";
 		if(key == optimalWord)
-			row = "<td><b>" + key + "</b></td>";
+			newWorkspace += "<td><b>" + key + "</b></td>";
 		else
-			row = "<td>" + key + "</td>";
+			newWorkspace += "<td>" + key + "</td>";
 		for(var subkey in map[key]){
 			console.log(key + ", " + subkey + ": " + map[key][subkey]);
-			row += "<td>" + map[key][subkey] + "</td>";
+			newWorkspace += "<td>" + map[key][subkey] + "</td>";
 		}
-		//No <tr> due to that getting automatically included when DOM is manipulated.
-		document.getElementById('output').innerHTML += row;
+		newWorkspace += "</tr>"
 	}
+	
+	newWorkspace += "</table>";
+	document.getElementById('workspace').innerHTML = newWorkspace;
+	console.log("finish update results table");
 }
 
 function optimalChoice(){
@@ -87,7 +89,7 @@ function optimalChoice(){
 		var unique = {};
 		for(var subkey in map[word]){
 			sum[word] += map[word][subkey];
-			unique[map[word][subkey]] = 1;
+			unique[map[word][subkey]] = 1; //1 doesn't mean anything, we're just using the map to find unique values
 		}
 		uniqueCount[word] = Object.keys(unique).length;
 	}

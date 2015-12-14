@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script type="text/javascript" src="fallout.js"></script>
-		<h1 id="myhead">Fallout Hacking Tool</h1>
+		<meta charset="UTF-8">
+		<script type='text/javascript' src='fallout.js'></script>
+		<h1 id='myhead'>Fallout Hacking Tool</h1>
 	</head>
 	<body>
 		<table>
-			<tr>
-				<td><table>
-					<tr><td><p>Enter the words below:</p></td></tr>
-					<tr><td><textarea id="words" rows="20" cols="80"></textarea></td></tr>
-					<tr><td><p id="progress">&nbsp</p></td></tr>
-					<tr><td><button id="start" onclick="start()">Start</button>
-							<button onclick="reset()">Clear</button></td></tr>
-				</table></td>
-				<td><table id="output">
-					
-				</table></td>
+			<tr><td><p>Enter the words below:</p></td></tr>
+			<tr><td>
+				<div id='workspace'>
+					<textarea id='words' rows='20' cols='80'></textarea>
+				</div>
+			</td></tr>
+			<tr><td><p id='progress'>&nbsp</p></td></tr>
+			<tr><td><button id='start' onclick='start()'>Start</button>
+					<button onclick='reset()'>Reset</button></td></tr>
 		</table>
 	</body>
 </html>
