@@ -10,6 +10,7 @@ function start(){
 		return;
 	}
 	
+	document.getElementById('start').disabled = true;
 	var wordList = document.getElementById('words').value.split(/[\n|\r|\r\n]+/);
 	var length = wordList[0].length;
 	for(var i=0;i<wordList.length;i++){
@@ -36,6 +37,7 @@ function reset(){
 	document.getElementById('output').innerHTML = "";
 	map = [];
 	validWordList = [];
+	document.getElementById('start').disabled = false;
 }
 
 function computeInverseHammingDistance(){
@@ -78,7 +80,6 @@ function updateResultsTable(){
 	}
 }
 
-//TODO check boundary conditions for no words entered
 function optimalChoice(){
 	var uniqueCount = {};
 	var sum = {};
@@ -88,7 +89,7 @@ function optimalChoice(){
 			sum[word] += map[word][subkey];
 			unique[map[word][subkey]] = 1;
 		}
-		uniqueCount[word] = unique.length;
+		uniqueCount[word] = Object.keys(unique).length;
 	}
 	
 	var highestUnique = 0;
@@ -106,7 +107,7 @@ function optimalChoice(){
 		}
 	}
 	
-	alert("optimal choice: " + bestChoice);
+	console.log("optimal choice: " + bestChoice);
 	
 	return bestChoice;
 }
