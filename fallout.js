@@ -1,5 +1,7 @@
-var validWordList = [];
-var map = [];
+var initialWordList = [];
+var curWordList = [];
+var hammMap = [];
+var distinctMap = [];
 
 function start(){
 	document.getElementById('progress').innerHTML = "Working...";
@@ -11,6 +13,7 @@ function start(){
 	}
 	
 	document.getElementById('start').disabled = true;
+	initialWordList = document.getElementById('words').value;
 	var wordList = document.getElementById('words').value.split(/[\n|\r|\r\n]+/);
 	var length = wordList[0].length;
 	for(var i=0;i<wordList.length;i++){
@@ -18,8 +21,8 @@ function start(){
 			alert("Words not all the same length.  Did you make a typo?");
 			return;
 		}
-		validWordList[i] = wordList[i];
-		map[validWordList[i]] = {};
+		curWordList[i] = wordList[i];
+		hammMap[curWordList[i]] = {};
 	}
 	
 	computeInverseHammingDistance();
@@ -27,24 +30,22 @@ function start(){
 	updateResultsTable();
 	
 	document.getElementById('progress').innerHTML = "Done";
-	
-	//alert(map);
 }
 
 function reset(){
-	document.getElementById('workspace').innerHTML = "<textarea id='words' rows='20' cols='80'></textarea>";
+	document.getElementById('workspace').innerHTML = "<textarea id='words' rows='15' cols='60' style='font-size:x-large'>" + initialWordList + "</textarea>";
 	document.getElementById('progress').innerHTML = "&nbsp";
-	map = [];
-	validWordList = [];
+	hammMap = [];
+	curWordList = [];
 	document.getElementById('start').disabled = false;
 }
 
 function computeInverseHammingDistance(){
-	for(var i=0;i<validWordList.length-1;i++){
-		for(var j=i+1;j<validWordList.length;j++){
-			var dist = inverseHammDist(validWordList[i],validWordList[j]);
-			map[validWordList[i]][validWordList[j]] = dist;
-			map[validWordList[j]][validWordList[i]] = dist;
+	for(var i=0;i<curWordList.length-1;i++){
+		for(var j=i+1;j<curWordList.length;j++){
+			var dist = inverseHammDist(curWordList[i],curWordList[j]);
+			hammMap[curWordList[i]][curWordList[j]] = dist;
+			hammMap[curWordList[j]][curWordList[i]] = dist;
 		}
 	}
 }
@@ -64,15 +65,17 @@ function inverseHammDist(word1, word2){
 function updateResultsTable(){
 	var optimalWord = optimalChoice();
 	var newWorkspace = "<table>";
-	for(var key in map){
+	for(var key in distinctMap){
 		newWorkspace += "<tr>";
 		if(key == optimalWord)
 			newWorkspace += "<td><b>" + key + "</b></td>";
 		else
 			newWorkspace += "<td>" + key + "</td>";
-		for(var subkey in map[key]){
-			console.log(key + ", " + subkey + ": " + map[key][subkey]);
-			newWorkspace += "<td>" + map[key][subkey] + "</td>";
+		for(var subkey in distinctMap[key]){
+			console.log(key + ", " + subkey + ": " + distinctMap[key][subkey]);
+			newWorkspace += "<td onclick=\"selectWord('" + 
+			key + 
+			"'," + subkey + ")\">" + subkey + "</td>";
 		}
 		newWorkspace += "</tr>"
 	}
@@ -83,26 +86,27 @@ function updateResultsTable(){
 }
 
 function optimalChoice(){
-	var uniqueCount = {};
+	var distinctCount = {};
 	var sum = {};
-	for(var word in map){
-		var unique = {};
-		for(var subkey in map[word]){
-			sum[word] += map[word][subkey];
-			unique[map[word][subkey]] = 1; //1 doesn't mean anything, we're just using the map to find unique values
+	for(var word in hammMap){
+		var distinct = {};
+		for(var subkey in hammMap[word]){
+			sum[word] += hammMap[word][subkey];
+			distinct[hammMap[word][subkey]] = 1; //1 doesn't mean anything, we're just using the map to find distinct values
 		}
-		uniqueCount[word] = Object.keys(unique).length;
+		distinctCount[word] = Object.keys(distinct).length;
+		distinctMap[word] = distinct;
 	}
 	
-	var highestUnique = 0;
+	var highestdistinct = 0;
 	var bestChoice;
 	
-	for(var word in uniqueCount){
-		if(uniqueCount[word] > highestUnique)
+	for(var word in distinctCount){
+		if(distinctCount[word] > highestdistinct)
 		{
-			highestUnique = uniqueCount[word];
+			highestdistinct = distinctCount[word];
 			bestChoice = word;
-		}else if(uniqueCount[word] == highestUnique){
+		}else if(distinctCount[word] == highestdistinct){
 			if(sum[word]>sum[bestChoice]){
 				bestChoice = word;
 			}
@@ -112,4 +116,8 @@ function optimalChoice(){
 	console.log("optimal choice: " + bestChoice);
 	
 	return bestChoice;
+}
+
+function selectWord(word, numCorrectLetters){
+	console.log("word: " + word + ", numCorrect: " + numCorrectLetters);
 }
