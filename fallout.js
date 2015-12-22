@@ -89,6 +89,8 @@ function updateResultsTable(){
 			newWorkspace += "<td>" + word + "</td>"; 
 		}
 		
+		newWorkspace += "<td onclick=\"selectWord('" + word + "',-1)\">Dud</td>";
+		
 		for(var invHammDist in words[word]['distinct']){
 			//console.log(word + ", " + invHammDist + ": " + words[word]['distinct'][invHammDist]);
 			newWorkspace += "<td onclick=\"selectWord('" + word + 
@@ -102,20 +104,25 @@ function updateResultsTable(){
 	console.log("finish update results table");
 }
 
+//We want the word with the most variance in inverse hamming distance then the word with the smallest sum of unique distances
 function calculateOptimalChoice(){
 	var distinctCount = {};
 	var sum = {};
 	
 	for(var word in remainingWords){
 		words[word]['distinct'] = {};
+		sum[word] = 0;
 		for(var comparedWord in words[word]['hamm']){
 			if(!remainingWords.hasOwnProperty(comparedWord))
 				continue;
 			var invHammDist = words[word]['hamm'][comparedWord];
-			sum[word] += invHammDist;
 			words[word]['distinct'][invHammDist] = 1;//1 doesn't mean anything, we're just using the map to find distinct values
 		}
-		distinctCount[word] = Object.keys(words[word]['distinct']).length;
+		var distinctDists = Object.keys(words[word]['distinct']);
+		for(var num in distinctDists){
+			sum[word] += parseInt(num);
+		}
+		distinctCount[word] = distinctDists.length;
 	}
 	
 	var highestdistinct = -1;
@@ -127,7 +134,7 @@ function calculateOptimalChoice(){
 			highestdistinct = distinctCount[word];
 			bestChoice = word;
 		}else if(distinctCount[word] == highestdistinct){
-			if(sum[word]>sum[bestChoice]){
+			if(sum[word]<sum[bestChoice]){
 				bestChoice = word;
 			}
 		}
@@ -143,10 +150,12 @@ function selectWord(word, numCorrectLetters){
 	words[word]['eliminated'] = true;
 	delete remainingWords[word];
 	
-	for(var candidateWord in words[word]['hamm']){
-		if(words[word]['hamm'][candidateWord]!=numCorrectLetters){
-			delete remainingWords[candidateWord];
-			words[candidateWord]['eliminated'] = true;
+	if(numCorrectLetters!=-1){
+		for(var candidateWord in words[word]['hamm']){
+			if(words[word]['hamm'][candidateWord]!=numCorrectLetters){
+				delete remainingWords[candidateWord];
+				words[candidateWord]['eliminated'] = true;
+			}
 		}
 	}
 	
