@@ -1,20 +1,16 @@
 var initialWordList = [];
-//var wordList = [];
-//var hammMap = [];
-//var distinctMap = [];
 var words = {};
 var remainingWords = {};
 
 function start(){
-	document.getElementById('progress').innerHTML = "Working...";
-	
 	if(document.getElementById('words').value == ""){
 		alert("You didn't enter anything");
-		document.getElementById('progress').innerHTML = "Done";
 		return;
 	}
 	
 	document.getElementById('start').disabled = true;
+	document.getElementById('start').className = 'disabledbutton';
+	document.getElementById('prompt').innerHTML = "For each guess click the number of correct letters beside the word:";
 	initialWordList = document.getElementById('words').value;
 	var wordList = document.getElementById('words').value.split(/[\n|\r|\r\n]+/);
 	var length = wordList[0].length;
@@ -33,17 +29,16 @@ function start(){
 	computeInverseHammingDistanceMatrix();
 	
 	updateResultsTable();
-	
-	document.getElementById('progress').innerHTML = "Done";
 }
 
 function reset(){
 	document.getElementById('workspace').innerHTML = "<textarea id='words' rows='15' cols='60' style='font-size:x-large'>" + initialWordList + "</textarea>";
-	document.getElementById('progress').innerHTML = "&nbsp";
 	words = {};
 	remainingWords = {};
 	initialWordList = [];
+	document.getElementById('prompt').innerHTML = "Enter the words below:";
 	document.getElementById('start').disabled = false;
+	document.getElementById('start').className = 'enabled';
 }
 
 function computeInverseHammingDistanceMatrix(){
@@ -75,11 +70,11 @@ function updateResultsTable(){
 	for(var word in words){
 		newWorkspace += "<tr>";
 		if(words[word]['eliminated']){
-			newWorkspace += "<td><s>" + word + "</s></td></tr>";
+			newWorkspace += "<td class='eliminated'>" + word + "</td></tr>";
 			continue;
 		}
 		else if(word == optimalWord){
-			newWorkspace += "<td><b>" + word + "</b></td>"; 
+			newWorkspace += "<td title='Optimal Choice' class='optimal'>" + word + "</td>"; 
 			if(Object.keys(remainingWords).length == 1){
 				newWorkspace += "</tr>"
 				continue;
@@ -89,22 +84,19 @@ function updateResultsTable(){
 			newWorkspace += "<td>" + word + "</td>"; 
 		}
 		
-		newWorkspace += "<td onclick=\"selectWord('" + word + "',-1)\">Dud</td>";
+		newWorkspace += "<td class='num' onclick=\"selectWord('" + word + "',-1)\">Dud</td>";
 		
 		for(var invHammDist in words[word]['distinct']){
-			//console.log(word + ", " + invHammDist + ": " + words[word]['distinct'][invHammDist]);
-			newWorkspace += "<td onclick=\"selectWord('" + word + 
-			"'," + invHammDist + ")\">" + invHammDist + "</td>";
+			newWorkspace += "<td class='num' onclick=\"selectWord('" + word + "'," + invHammDist + ")\">" + invHammDist + "</td>";
 		}
 		newWorkspace += "</tr>"
 	}
 	
 	newWorkspace += "</table>";
 	document.getElementById('workspace').innerHTML = newWorkspace;
-	console.log("finish update results table");
 }
 
-//We want the word with the most variance in inverse hamming distance then the word with the smallest sum of unique distances
+//We want the word with the most variance in inverse hamming distances then the word with the smallest sum of unique distances
 function calculateOptimalChoice(){
 	var distinctCount = {};
 	var sum = {};
@@ -125,6 +117,10 @@ function calculateOptimalChoice(){
 		distinctCount[word] = distinctDists.length;
 	}
 	
+	return findHighestVarianceLowestSumWord(distinctCount,sum);
+}
+
+function findHighestVarianceLowestSumWord(distinctCount,sum){
 	var highestdistinct = -1;
 	var bestChoice;
 	
@@ -140,13 +136,10 @@ function calculateOptimalChoice(){
 		}
 	}
 	
-	console.log("optimal choice: " + bestChoice);
-	
 	return bestChoice;
 }
 
 function selectWord(word, numCorrectLetters){
-	console.log("word: " + word + ", numCorrect: " + numCorrectLetters);
 	words[word]['eliminated'] = true;
 	delete remainingWords[word];
 	

@@ -2,18 +2,19 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="fallout.css">
 		<script type='text/javascript' src='fallout.js'></script>
-		<h1 style='font-size:xx-large' id='myhead'>Fallout Hacking Tool</h1>
 	</head>
 	<body>
+		<h1>Fallout Hacking Tool</h1>
 		<table>
-			<tr><td><p style='font-size:x-large'>Enter the words below:</p></td></tr>
+			<tr><td><p id='prompt'>Enter the words below:</p></td></tr>
 			<tr><td>
-				<div style='font-size:x-large' id='workspace'>
-					<textarea id='words' rows='15' cols='60' style='font-size:x-large'></textarea>
+				<div id='workspace'>
+					<textarea id='words' rows='15' cols='60'></textarea>
 				</div>
 			</td></tr>
-			<tr><td><p id='progress'>&nbsp</p></td></tr>
+			<tr><td><p id='helptext'>*<u>Underlined</u> is the optimal choice</p></td></tr>
 			<tr><td><button id='start' onclick='start()'>Start</button>
 					<button onclick='reset()'>Reset</button></td></tr>
 		</table>

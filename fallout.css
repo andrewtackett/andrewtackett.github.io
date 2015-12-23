@@ -1,0 +1,52 @@
+body {
+	background-color: black;
+	font-family: sans-serif;
+}
+
+h1 {
+	color: green;
+	font-size:xx-large;
+}
+
+#prompt, #workspace, #words{
+	font-size:x-large;
+	color: green;
+}
+
+#words {
+	border-width: thin;
+	border-color: green;
+	background-color: black;
+}
+
+#helptext {
+	color: green;
+}
+
+.num:hover {
+	background-color: forestgreen;
+	color: black;
+}
+
+button {
+	border-style: none;
+	color: black;
+	background-color: gray;
+}
+
+button:hover {
+	background-color: lightgray;
+}
+
+.disabledbutton,.disabledbutton:hover {
+	background-color: #404040;
+}
+
+.eliminated {
+	text-decoration: line-through;
+	color: #004000;
+}
+
+.optimal {
+	text-decoration: underline;
+}
