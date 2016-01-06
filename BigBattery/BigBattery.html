@@ -3,6 +3,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="BigBattery.css">
+    	<script type='text/javascript' src='../jquery-2.1.4.min.js'></script>
+		<script type='text/javascript' src='../backbone-1.2.3.min.js'></script>
 		<script type='text/javascript' src='BigBattery.js'></script>
 	</head>
 	<body>
@@ -13,7 +15,7 @@
 				<div id='workspace'>
 				</div>
 			</td></tr>
-			<tr><td><button id='start' onclick='start()'>Start</button>
+			<tr><td><button id='start' onclick='updateURLParams()'>Start</button>
 					<button onclick='reset()'>Reset</button></td></tr>
 		</table>
 	</body>
