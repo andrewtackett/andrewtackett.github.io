@@ -16,11 +16,53 @@ function updateURLParams(){
 }
 
 var app = {};
-app.SimCell = Backbone.View.extend({
+var selectedElectrolyte;
+//var human = new Human({ name: "Thomas", age: 67, child: 'Ryan'});
+/*app.Cell = Backbone.View.extend({
+	defaults: {
+	    type: 'sulfurousAcid'
+	 },
 	tagname: 'td',
 	template: _.template($('#cell-template').html()),
 	render : function(){
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	}
-})
+});
+
+app.CellList = Backbone.Collection.extend({
+  model: app.Cell
+});
+
+// instance of the Collection
+app.cellList = new app.CellList();*/
+
+function selectElectrolyte(selected){
+	$('#sulfurousAcid').class = 'electrolyte';
+	$('#resonantEnder').class = 'electrolyte';
+	$('#destabilizedRedstone').class = 'electrolyte';
+	
+	if(selected=='sulfurousAcid'){
+		selectedElectrolyte = selected;
+		$(selected).class = 'electrolyteSelected';
+	}else if(selected=='resonantEnder'){
+		selectedElectrolyte = selected;
+		$(selected).class = 'electrolyteSelected';
+	}else{
+		selectedElectrolyte = selected;
+		$(selected).class = 'electrolyteSelected';
+	}
+	console.log(selected);
+}
+
+function initializeBattery(){
+	var length = $('#Length').val();
+	var width = $('#Width').val();
+	var height = $('#Height').val();
+	
+	alert("Length:" + length + ",width:" + width + ",height:" + height);
+}
+
+function reset(){
+	
+}
