@@ -2,7 +2,7 @@ This is where I'll be keeping track of my progress on my Natural Language Proces
 
 Proposed Timeline Milestones:
 
-* 2/21 - Gather all chapter summaries from ASOIAF wiki (will have to write python scraper for this)
+* 2/21 - Gather all chapter summaries from ASOIAF wiki (will have to write python scraper for this) [**DONE**]
 
 * 3/2 - Write reddit bot to scan subreddit and parse out relevant thread info for processing, i.e. thread original post text, response comments text, spoilers tags, etc.
 
