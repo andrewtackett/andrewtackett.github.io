@@ -4,7 +4,7 @@ Proposed Timeline Milestones:
 
 * 2/21 - Gather all chapter summaries from ASOIAF wiki (will have to write python scraper for this) [**DONE**]
 
-* 3/2 - Write reddit bot to scan subreddit and parse out relevant thread info for processing, i.e. thread original post text, response comments text, spoilers tags, etc.
+* 3/2 - Write reddit bot to scan subreddit and parse out relevant thread info for processing, i.e. thread original post text, response comments text, spoilers tags, etc. [**DONE**]
 
 * 3/14 - Research and choose approaches to extract and recognize spoilers (topic modeling/recognition, named-entity recognition, event extraction/recognition)
 
