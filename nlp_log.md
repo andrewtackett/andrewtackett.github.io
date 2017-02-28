@@ -11,3 +11,13 @@ Proposed Timeline Milestones:
 * 4/13 - Write main stage of program to identify spoilers
 
 * 4/20 - Evaluate and refine as necessary
+
+-----------------------------------------------------------------------------------------------
+
+Log:
+
+2/20 - Wrote python scraper to gather chapter summaries
+
+2/24 - Wrote Reddit bot to gather thread data for analysis
+
+2/28 - Looking at methods for event co-reference recognition (Latent Dirichlet Allocation)
