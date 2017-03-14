@@ -6,7 +6,7 @@ Proposed Timeline Milestones:
 
 * 3/2 - Write reddit bot to scan subreddit and parse out relevant thread info for processing, i.e. thread original post text, response comments text, spoilers tags, etc. [**DONE**]
 
-* 3/14 - Research and choose approaches to extract and recognize spoilers (topic modeling/recognition, named-entity recognition, event extraction/recognition)
+* 3/14 - Research and choose approaches to extract and recognize spoilers (topic modeling/recognition, named-entity recognition, event extraction/recognition) [**DONE**]
 
 * 4/13 - Write main stage of program to identify spoilers
 
@@ -21,3 +21,5 @@ Log:
 2/24 - Wrote Reddit bot to gather thread data for analysis
 
 2/28 - Looking at methods for event co-reference recognition (Latent Dirichlet Allocation)
+
+3/14 - After looking at various papers on topic modeling I've decided to use a hierarchical dirichlet process model with Gibbs sampling to cluster spoiler and actual texts and then assign spoilers to the Book and Chapter text in that cluster
