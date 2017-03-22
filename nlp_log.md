@@ -23,3 +23,5 @@ Log:
 2/28 - Looking at methods for event co-reference recognition (Latent Dirichlet Allocation)
 
 3/14 - After looking at various papers on topic modeling I've decided to use a hierarchical dirichlet process model with Gibbs sampling to cluster spoiler and actual texts and then assign spoilers to the Book and Chapter text in that cluster
+
+3/21 - Continuing reading, collecting resources, and understanding the intuition of nonparametric bayesian models and how to implement them
