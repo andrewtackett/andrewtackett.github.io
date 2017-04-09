@@ -8,7 +8,7 @@ Proposed Timeline Milestones:
 
 * 3/14 - Research and choose approaches to extract and recognize spoilers (topic modeling/recognition, named-entity recognition, event extraction/recognition) [**DONE**]
 
-* 4/13 - Write main stage of program to identify spoilers
+* 4/13 - Write main stage of program to identify spoilers [**DONE**]
 
 * 4/20 - Evaluate and refine as necessary
 
@@ -27,3 +27,5 @@ Log:
 3/21 - Continuing reading, collecting resources, and understanding the intuition of nonparametric bayesian models and how to implement them
 
 3/28 - Found gensim implementation of HDP, will use that for now and try to implement my own given enough time.  Got data preprocessed/stemmed and set up the modelling code to find topic distributions for chapter summaries and find distributions for new texts (threads).  Working on smoothing the data for cosine similarity calculations
+
+4/9 - Data is now smoothed allowing for full classification.  Early results seem to indicate that the model is picking up topics in text but needs further refinement.  Working on tweaking the programs to improve intuitive performance evaluation
