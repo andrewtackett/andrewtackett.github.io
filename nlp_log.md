@@ -10,7 +10,7 @@ Proposed Timeline Milestones:
 
 * 4/13 - Write main stage of program to identify spoilers [**DONE**]
 
-* 4/20 - Evaluate and refine as necessary
+* 4/20 - Evaluate and refine as necessary [**DONE**]
 
 -----------------------------------------------------------------------------------------------
 
@@ -29,3 +29,5 @@ Log:
 3/28 - Found gensim implementation of HDP, will use that for now and try to implement my own given enough time.  Got data preprocessed/stemmed and set up the modelling code to find topic distributions for chapter summaries and find distributions for new texts (threads).  Working on smoothing the data for cosine similarity calculations
 
 4/9 - Data is now smoothed allowing for full classification.  Early results seem to indicate that the model is picking up topics in text but needs further refinement.  Working on tweaking the programs to improve intuitive performance evaluation
+
+4/23 - After looking back over the data in more detail it came to my attention that many of the threads collected actually couldn't be classified by a human as pertaining to one specific chapter or contained references to outside information which would make classification difficult.  After narrowing down my input data to only those threads with information from the books (making sure the title contains spoilers main) intuitive performance is much better.
