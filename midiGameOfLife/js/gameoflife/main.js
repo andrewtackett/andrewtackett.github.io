@@ -1,16 +1,23 @@
+//Constants
+var firstGameColumn = 1;
+var lastGameColumn = 60;
+var colSpacerNum = 1000;
+
+var firstGameRow = 1;
+var lastGameRow = 27;
+var firstNote = 41; //21
+var lastNote = 100; //108
+var rowSpacerNum = 1000;
+
+//Variables
 var soundOnClick = true;
 var logging = false;
 var timeout = null;
 var trackerTimeout = null;
-var timeBetweenColumns = 250; //Milliseconds
-var timeBetweenFullPlay = (88+1) * timeBetweenColumns; //88 Notes
+var timeBetweenColumns = 50; //Milliseconds
+var timeBetweenFullPlay = (lastGameColumn*1.1) * timeBetweenColumns;
+var curColumn = firstGameColumn;
 
-//Constants
-var firstGameRow = 1;
-var lastGameRow = 27;
-var firstNote = 21;
-var lastNote = 108;
-var rowSpacerNum = 1000;
 
 var initialize = function(){
   MIDI.loadPlugin({
@@ -36,16 +43,17 @@ var initialize = function(){
 var createUI = function(){
   console.log("creating tables");
   $("#tracker").append("<tr>");
-  for(var num=firstNote; num<=lastNote;num++){
-    $("#tracker").append("<td id='" + num + "' width='20px' height='20px'></td>")
+  for(var num=firstGameColumn; num<=lastGameColumn;num++){
+    var cellID = num * colSpacerNum;
+    $("#tracker").append("<td id='" + cellID + "' width='10px' height='10px'></td>")
   }
   $("#tracker").append("</tr>");
 
-  for(var numRows=firstGameRow;numRows<lastGameRow;numRows++){
+  for(var numRows=firstNote;numRows<lastNote;numRows++){
     $("#squares").append("<tr>");
-    for(var num=firstNote;num<=lastNote;num++){
-      var cellID = (num + numRows * rowSpacerNum);
-      $("#squares").append("<td id=" +  cellID + " onclick='cellClick(\""+  num + "\",\"" + cellID + "\")' width='20px' height='20px'></td>");
+    for(var num=firstGameColumn;num<=lastGameColumn;num++){
+      var cellID = (num * colSpacerNum + numRows);
+      $("#squares").append("<td id=" +  cellID + " onclick='cellClick(\""+  numRows + "\",\"" + cellID + "\")' width='10px' height='10px'></td>");
     }
     $("#squares").append("</tr>");
   }
@@ -88,10 +96,10 @@ var incrementGameState = function(){
 
 var calcFutureGameState = function(){
   var futureGameState = {};
-  for(var numRows=firstGameRow;numRows<lastGameRow;numRows++){
-    for(var num=firstNote;num<=lastNote;num++){
+  for(var numRows=firstNote;numRows<lastNote;numRows++){
+    for(var num=firstGameColumn;num<=lastGameColumn;num++){
       var futureCellState = false; //DEAD
-      var cellID = (num + numRows * rowSpacerNum);
+      var cellID = (num * colSpacerNum + numRows);
       var cellNeighbors = [cellID + 1, cellID -1, cellID + 1000, cellID - 1000, cellID + 1001, cellID - 1001, cellID + 999, cellID - 999];
       var numAliveNeighbors = checkNumAliveNeighbors(cellNeighbors);
       if(numAliveNeighbors < 2 || numAliveNeighbors > 3){
@@ -115,7 +123,7 @@ var checkNumAliveNeighbors = function(cellNeighbors){
   for(var index in cellNeighbors){
     var cellID = cellNeighbors[index];
     //Handle boundary conditions
-    if(cellID < (firstGameRow * rowSpacerNum) || cellID > (lastGameRow * rowSpacerNum) || cellID%rowSpacerNum < firstNote || cellID%rowSpacerNum > lastNote){
+    if(cellID < (firstGameColumn * colSpacerNum) || cellID > (lastGameColumn * colSpacerNum) || cellID%colSpacerNum < firstNote || cellID%colSpacerNum > lastNote){
       continue;
     }else{
       if(cellAlive(cellID)){
@@ -141,7 +149,7 @@ var applyFutureGameState = function(futureGameState){
     }
   }
 
-  playMIDINotes(firstNote); //Start point is first note
+  playMIDINotes();
 }
 
 var killCell = function(cellID){
@@ -152,20 +160,24 @@ var reviveCell = function(cellID){
   $("#" + cellID).css("background-color","rgb(0, 0, 0)");
 }
 
-var playMIDINotes = function(curNum){
-  console.log("playing notes: " + curNum);
-  if(curNum > lastNote){
-    console.log("killing all tracker row");
-    for(var num=firstNote;num<=lastNote;num++){
-      $("#" + num).css('background-color',"rgb(255,255,255)");
-    }
+var playMIDINotes = function(){
+  //console.log("playing notes: " + curColumn);
+  if(curColumn > lastGameColumn){
+    curColumn = firstGameColumn;
+    killTrackerRow();
   }else{
-    $("#" + curNum).css('background-color',"rgb(0, 0, 0)");
-    if(checkIfColumnHasAlive(curNum)){
-      playNote(curNum);
+    var curColID = (curColumn*colSpacerNum);
+    $("#" + curColID).css('background-color',"rgb(0, 0, 0)");
+    for(var num=firstNote;num<lastNote;num++){
+      var cellID = curColID + num;
+      if(cellAlive(cellID)){
+        playNote(num);
+      }
     }
     trackerTimeout = setTimeout(function(){
-      playMIDINotes(curNum+1);
+      curColumn += 1;
+      //toggleCellColor(curColumn*colSpacerNum);
+      playMIDINotes();
     },timeBetweenColumns);
   }
 }
@@ -178,6 +190,14 @@ var checkIfColumnHasAlive = function(columnID){
     }
   }
   return false;
+}
+
+var killTrackerRow = function(){
+  console.log("killing all tracker row");
+  for(var num=firstGameColumn;num<=lastGameColumn;num++){
+    var colID = num * colSpacerNum;
+    $("#" + colID).css('background-color',"rgb(255,255,255)");
+  }
 }
 
 var startGoL = function(){
@@ -201,7 +221,7 @@ var stopGoL = function(){
 var resetGoL = function(){
   console.log("resetting");
   stopGoL();
-
+  killTrackerRow();
   for(var numRows=0;numRows<lastGameRow;numRows++){
     for(var num=firstNote;num<=lastNote;num++){
       var cellID = (num + numRows * rowSpacerNum);
