@@ -1,40 +1,141 @@
 <html id="all" style="background-color:black">
     <head>
+        <style>
+            label{
+                color:white;
+            }
+        </style>
         <script src="../jscolor.js" type="text/javascript"></script>
         <script src="../jquery-3.4.1.min.js" type="text/javascript"></script>
         <script>
-            setTimeout(function(){
+            $( document ).ready(function(){
+                savedButtonColorChoices = {};
+
+                genRandomColor = function(){
+                    return Math.floor(Math.random()*16777215).toString(16);
+                }
+
+                renderSavedButtonColorChoices = function(){
+                    $("#characterMappingTable").html("<tr><th style='color:white'>Character</th><th style='color:white'>Color</th></tr>");
+                    for(var keycode in savedButtonColorChoices){
+                        var character = String.fromCharCode(keycode);
+                        if(character === " "){
+                            character = "&nbsp;";
+                        }
+                        var color = savedButtonColorChoices[keycode];
+                        $("#characterMappingTable").append("<tr><td style='color:white'>" + character + "</td><td style='width:100px;background:#" + color +"'></td></tr>");
+                    }
+                }
+
+                mapButtonColorChoice = function(){
+                    var keyCode = $("#newButtonChar").val().charCodeAt(0);
+                    var newButtonColor = $("#newButtonColor").val();
+                    console.log('map button color choice: ' + keyCode + ", " + newButtonColor);
+                    savedButtonColorChoices[keyCode] = newButtonColor;
+                    renderSavedButtonColorChoices();
+                    $("#newButtonChar").val("");
+                    $("#newButtonColor").val("FFFFFF");
+                    $("#newButtonColor").attr("style","background-image: none; …or: rgb(255, 255, 255);");
+                }
+
+                clearButtonColorChoices = function(){
+                    delete savedButtonColorChoices;
+                    savedButtonColorChoices = {};
+                    renderSavedButtonColorChoices();
+                    console.log("clearButtonColorChoices: " + JSON.stringify(savedButtonColorChoices));
+                }
+
+                randomizeRemainingColorChoices = function(){
+                    var allChars = "1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./ ";
+                    var cssTransitionButtonCharacterKeyCode = $("#cssTransitionButtonCharacter").val().charCodeAt(0);
+                    var cssTransitionButtonCharacter = $("#cssTransitionButtonCharacter").val().slice(0,1);
+                    savedButtonColorChoices[cssTransitionButtonCharacterKeyCode] = $("#otherColor").val();
+                    for(var i=0;i<allChars.length;i++){
+                        var keyCode = allChars.charCodeAt(i);
+                        if(!(keyCode in savedButtonColorChoices) && !(keyCode === cssTransitionButtonCharacterKeyCode)){
+                            savedButtonColorChoices[keyCode] = genRandomColor();
+                        }
+                    }
+                    console.log("randomizeRemainingColorChoices: " + JSON.stringify(savedButtonColorChoices));
+                    renderSavedButtonColorChoices();
+                }
+
+                $("#randomizeRemainingColorChoices").click(randomizeRemainingColorChoices);
+                $("#clearButtonColorChoices").click(clearButtonColorChoices);
+                $("#newButtonColorMapperBtn").click(mapButtonColorChoice);
                 $("#saveSettingsBtn").click(function(event){
                     console.log("save settings button clicked!");
                     $("#modal").hide();
-                    transition = $("#cssTransitionSpeed").val() || 0;
-                    delay = $("#otherColorDelay").val() || 100;
-                    defaultColor = $("#defaultColor").val();
-                    otherColor = $("#otherColor").val();
                     $("#all").keypress(function( event ) {
+                        test = event;
                         event.preventDefault();
-                        console.log(event.which);
+                        defaultColor = $("#defaultColor").val();
+                        otherColor = $("#otherColor").val();
+                        transition = $("#cssTransitionSpeed").val() || 1;
+                        cssTransitionButtonCharacterKeyCode = $("#cssTransitionButtonCharacter").val().charCodeAt(0) || 32;
+                        var keyCode = event.which || event.keyCode;
+                        console.log(keyCode);
+                        if(keyCode!=cssTransitionButtonCharacterKeyCode){
+                            transition = 0;
+                        }
+                        if(keyCode in savedButtonColorChoices){
+                            otherColor = savedButtonColorChoices[keyCode];
+                        }
+                        delay = Math.max((transition * 1000) * 2,100);
                         var all = $("#all");
                         var otherTransitionStyle = "background:#"+otherColor+";-webkit-transition:background "+transition+"s;-moz-transition:background "+transition+"s;-o-transition:background "+transition+"s;transition:background "+transition+"s";
                         var defaultTransitionStyle = "background:#"+defaultColor+";-webkit-transition:background "+transition+"s;-moz-transition:background "+transition+"s;-o-transition:background "+transition+"s;transition:background "+transition+"s";
                         console.log("otherTransitionStyle: " + otherTransitionStyle);
-                        console.log("defaultTransitionStyle: " + defaultTransitionStyle);
+                        console.log("delay: " + delay);
                         $("#all").attr("style",otherTransitionStyle);
                         setTimeout(function(){
+                            console.log("defaultTransitionStyle: " + defaultTransitionStyle);
                             $("#all").attr("style",defaultTransitionStyle);
                         },delay);
                     });
                 });
-            },200);
+            });
         </script>
     </head>
     <body>
         <div id="modal">
-            <label style="color:white">Default color:</label><input id="defaultColor" class="jscolor" value="000000"></input>
-            <label style="color:white">Other Color:</label><input id="otherColor" class="jscolor" value="FFFFFF"></input>
-            <input type="text" id="otherColorDelay" placeholder="Delay in milliseconds"></input>
-            <input type="text" id="cssTransitionSpeed" placeholder="Transition speed (secs)"></input>
-            <button type="button" id="saveSettingsBtn">Set up page</button>
+            <table>
+                <tr>
+                    <td><label>Default color:</label></td>
+                    <td><input id="defaultColor" class="jscolor" value="000000"></input></td>
+                </tr>
+                <tr>
+                    <td><label>Other Color:</label></td>
+                    <td><input id="otherColor" class="jscolor" value="FFFFFF"></input></td>
+                </tr>
+                <tr>
+                    <td><label>Transition Speed:</label></td>
+                    <td><input type="text" id="cssTransitionSpeed" placeholder="Transition speed (secs)"></input></td>
+                </tr>
+                <tr>
+                    <td><label>Transition character:</label></td>
+                    <td><input type="text" id="cssTransitionButtonCharacter" placeholder="Enter character for transition"></input></td>
+                </tr>
+                <tr>
+                    <td><button type="button" id="saveSettingsBtn">Set up page</button></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td><label>Color for button:</label></td>
+                    <td><input id="newButtonColor" class="jscolor" value="FFFFFF"></input></td>
+                </tr>
+                <tr>
+                    <td><label>Button to map:</label></td>
+                    <td><input type="text" id="newButtonChar"></input></td>
+                </tr>
+                <tr>
+                    <td><button type="button" id="newButtonColorMapperBtn">Map button to color</button></td>
+                    <td><button type="button" id="clearButtonColorChoices">Clear Button Color Choices</button></button></td>
+                    <td><button type="button" id="randomizeRemainingColorChoices">Randomize remaining color choices</button></td>
+                </tr>
+            </table>
+            <table id="characterMappingTable"></table>
         </div>
     </body>
 </html>
